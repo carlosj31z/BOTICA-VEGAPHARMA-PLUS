@@ -10,16 +10,20 @@ Sistema web para la operación diaria de una botica en Perú, alineado con **SUN
 
 | Módulo | Qué hace |
 |---|---|
-| **Punto de venta** (`F1`) | Búsqueda por nombre, principio activo o código de barras; venta por unidad o por caja (fracción); descuentos; boleta, factura o nota de venta; pagos en efectivo con vuelto, **tarjeta por POS** (Izipay, Niubiz, OpenPay, Culqi, Mercado Pago u otro, con N° de operación), Yape, Plin, transferencia y **pagos mixtos**. El carrito sobrevive a una recarga. Atajos: `F2` buscar, `F4` cliente, `F9` cobrar, `Shift+Enter` agrega caja. |
+| **Punto de venta** (`F1`) | Pensado para trabajar solo con teclado y lector. Búsqueda por nombre, principio activo o código de barras con **orientación del medicamento** al lado; venta por **unidad, blíster o caja**; **genéricos y alternativas** más baratas (`F7`); descuentos; boleta, factura o nota de venta; consulta de **DNI/RUC** (RENIEC/SUNAT); pagos en efectivo con vuelto, **tarjeta por POS** (Izipay, Niubiz, OpenPay, Culqi, Mercado Pago u otro, con N° de operación), Yape, Plin, transferencia y **pagos mixtos**; comprobante por **WhatsApp**. El carrito sobrevive a una recarga. |
+| **Lector de códigos** | Lector USB tradicional (funciona aunque el cursor no esté en el buscador), **cámara** de la PC o tablet, y **celular como lector**: abra `/escaner` en el teléfono con el mismo usuario y cada lectura cae en el carrito de la caja; también sirve para consultar precio y stock en el anaquel. |
+| **Vademécum** | 68 fichas: para qué sirve, cómo actúa, dosis, contraindicaciones, interacciones y qué recomendar. Editable por el químico farmacéutico. |
+| **Inventario físico** | Toma de inventario por lote escaneando; al cerrar ajusta el stock con la diferencia y lo deja en el kardex. |
+| **Libro de Reclamaciones** | Hojas numeradas con el formato oficial, impresión para el consumidor y control del plazo de 15 días hábiles. |
 | **Ventas con receta** | Productos marcados como *con receta*, *receta retenida* o *controlado* exigen paciente, médico y CMP; los controlados solo los dispensa el químico farmacéutico. |
 | **Caja y turnos** | Apertura con fondo, ingresos/egresos, arqueo por denominaciones, diferencia y reporte de cierre imprimible (80 mm). Un turno por caja y por usuario. |
-| **Historial de ventas** | Filtros, exportación CSV, reimpresión de ticket, **notas de crédito** (devuelven stock a los mismos lotes) y anulación de notas de venta. |
+| **Historial de ventas** | Filtros, exportación CSV, reimpresión de ticket, **notas de crédito** (devuelven stock a los mismos lotes), **anulación ante SUNAT** (comunicación de baja, dentro de 7 días) y anulación de notas de venta. |
 | **Facturación SUNAT** | Envío a través de un PSE (Nubefact incluido; la interfaz permite agregar otros sin tocar el resto del sistema). Ticket con QR SUNAT e importe en letras. Panel de pendientes, rechazados y reenvío. Si el proveedor no responde, la venta no se bloquea: queda *pendiente* y se reenvía (botón o cron diario). |
 | **Productos** | Nombre, DCI, concentración, forma, presentación, laboratorio, **registro sanitario**, **código DIGEMID**, condición de venta, lista de control, unidades por caja, precios por unidad y caja, afectación IGV, stock mínimo, ubicación, cadena de frío. |
 | **Lotes y vencimientos** | Stock por lote con salida **FEFO** automática (nunca vende lotes vencidos), alertas por vencer/vencidos, bajas por vencimiento, merma o devolución. |
 | **Kardex** | Movimientos valorizados por producto y lote con saldo, usuario y referencia. Exportable. |
 | **Compras y proveedores** | Registro por factura con lote y vencimiento por ítem, costo promedio ponderado y actualización opcional del precio de venta. |
-| **DIGEMID** | Alertas sanitarias, **libro de recetas y controlados** (imprimible/exportable) y **archivo para el Observatorio de Precios**. |
+| **DIGEMID** | **Alertas sanitarias** leídas a diario de la web de DIGEMID y cruzadas con sus lotes y registros sanitarios (bloqueo de lote con un clic), vencimientos y stock, **catálogo DIGEMID** importable con asistente para asignar el CodProd, **libro de recetas y controlados** y **archivo para el Observatorio de Precios**. |
 | **Reportes** | Venta neta, utilidad y margen, ticket promedio, venta por día y hora, por medio de pago, por usuario, productos más vendidos, valorización del inventario. |
 | **Usuarios** | Roles: administrador, químico farmacéutico, cajero y almacén. Todo queda registrado con el usuario; auditoría de cambios en productos, usuarios y configuración. |
 
@@ -40,6 +44,8 @@ Sistema web para la operación diaria de una botica en Perú, alineado con **SUN
 ### 1. Base de datos (Supabase)
 
 1. En su proyecto de Supabase abra **SQL Editor → New query**, pegue el contenido de [`supabase/instalar.sql`](supabase/instalar.sql) y pulse **Run**. Crea tablas, funciones, vistas y seguridad (RLS). No carga datos de demostración.
+   - **Si ya instaló la etapa 1**, ejecute solo [`supabase/actualizar_etapa2.sql`](supabase/actualizar_etapa2.sql).
+   - Opcional: [`supabase/datos_prueba.sql`](supabase/datos_prueba.sql) carga 46 productos de prueba con lotes `PRUEBA-NN` (al final del archivo está cómo borrarlos).
 2. En **Authentication → Sign In / Providers**, desactive **Allow new users to sign up**. Los usuarios se crean desde el propio ERP.
 3. En **Authentication → Users → Add user → Create new user**, cree su usuario con correo y contraseña (marque *Auto confirm*). **El primer usuario creado es el administrador.**
 
@@ -52,6 +58,7 @@ Alternativa con CLI: `npx supabase link --project-ref <ref>` y `npx supabase db 
    - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API).
    - `NUBEFACT_RUTA` y `NUBEFACT_TOKEN` cuando tenga la cuenta de facturación (mientras tanto las ventas quedan *pendientes*).
    - `CRON_SECRET`: un texto largo aleatorio.
+   - Opcional: `CONSULTA_DOC_TOKEN` para autocompletar nombre y dirección desde el DNI o RUC (decolecta.com o apis.net.pe).
 3. **Deploy**. Entre con el usuario administrador y complete **Configuración** (RUC, razón social, dirección, código de establecimiento DIGEMID, director técnico, series por caja).
 
 ### 3. Facturación electrónica (Nubefact)
@@ -61,6 +68,25 @@ Alternativa con CLI: `npx supabase link --project-ref <ref>` y `npx supabase db 
 3. Registre en Nubefact las mismas series que en *Configuración* (por defecto `B001`, `F001`, `BC01`, `FC01`).
 
 Para usar otro PSE/OSE, implemente `ProveedorFacturacion` en `src/lib/facturacion/` y regístrelo en `index.ts`.
+
+### 4. Lector de códigos de barras
+
+- **USB o Bluetooth (modo teclado)**: conéctelo y listo. No requiere configuración; si el lector permite elegir sufijo, deje **Enter** (CR).
+- **Celular**: en el teléfono abra `https://<su-dominio>/escaner`, ingrese con el mismo usuario de la caja y permita la cámara. Con el Punto de venta abierto en la PC verá «Celular lector conectado».
+- **Cámara de la PC o tablet**: botón de cámara junto al buscador del Punto de venta.
+
+### Atajos del Punto de venta
+
+| Tecla | Acción |
+|---|---|
+| `F2` | Buscar producto |
+| `Enter` / `Shift+Enter` | Agregar por unidad / por caja |
+| `↑` `↓` `+` `−` `Supr` | Moverse en el carrito, cambiar cantidad, quitar |
+| `F8` | Cambiar unidad → blíster → caja |
+| `F6` / `F7` | Ficha del medicamento / genéricos y alternativas |
+| `F4` | Cliente (DNI/RUC) |
+| `F9` o `Ctrl+Enter` | Cobrar. En el cobro: `E` `D` `C` `Y` `P` `T` eligen el medio y `Enter` confirma |
+| `F10` | Reimprimir el último ticket |
 
 ## Desarrollo local
 
@@ -85,6 +111,7 @@ npm run dev
 ```
 supabase/migrations/   esquema, lógica de negocio (registrar_venta, registrar_compra, turnos, NC) y reportes
 supabase/instalar.sql  las migraciones en un solo archivo para el SQL Editor
+supabase/actualizar_etapa2.sql  solo lo nuevo de la etapa 2
 src/app/(app)/         pantallas del sistema
 src/app/(print)/       ticket y reporte de cierre (80 mm)
 src/app/api/           envío SUNAT, reintentos, alta de usuarios, salud

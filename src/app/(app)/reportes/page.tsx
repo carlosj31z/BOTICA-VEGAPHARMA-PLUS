@@ -34,7 +34,7 @@ export default function Reportes() {
       <PageHeader title="Reportes" subtitle="Ventas, rentabilidad e inventario"
         actions={<>
           <input type="date" className="input w-40" value={desde} onChange={(e) => setDesde(e.target.value)} />
-          <span className="text-slate-400">a</span>
+          <span className="text-zinc-400">a</span>
           <input type="date" className="input w-40" value={hasta} onChange={(e) => setHasta(e.target.value)} />
           {cargando && <Spinner />}
         </>} />
@@ -55,7 +55,7 @@ export default function Reportes() {
                 {r.por_dia.map((d: any) => (
                   <div key={d.dia} className="group relative flex min-w-5 flex-1 flex-col items-center gap-1">
                     <div className="w-full max-w-10 rounded-t bg-marca-500/85 hover:bg-marca-600" style={{ height: `${Math.max(2, (Number(d.total) / maxDia) * 160)}px` }} title={`${d.dia}: ${S(d.total)} (${d.tickets} tickets)`} />
-                    <span className="text-[10px] text-slate-400">{d.dia.slice(8)}</span>
+                    <span className="text-[10px] text-zinc-400">{d.dia.slice(8)}</span>
                   </div>
                 ))}
               </div>
@@ -66,10 +66,10 @@ export default function Reportes() {
                 {Object.entries(r.por_metodo).sort((a: any, b: any) => b[1] - a[1]).map(([k, v]: any) => (
                   <div key={k}>
                     <div className="flex justify-between text-[13px]"><span>{METODO_PAGO[k]}</span><span className="tabular-nums font-medium">{S(v)}</span></div>
-                    <div className="mt-1 h-1.5 rounded-full bg-slate-100"><div className="h-1.5 rounded-full bg-marca-500" style={{ width: `${Math.min(100, Math.max(0, (v / (totalMetodos || 1)) * 100))}%` }} /></div>
+                    <div className="mt-1 h-1.5 rounded-full bg-zinc-100"><div className="h-1.5 rounded-full bg-marca-500" style={{ width: `${Math.min(100, Math.max(0, (v / (totalMetodos || 1)) * 100))}%` }} /></div>
                   </div>
                 ))}
-                <div className="border-t border-slate-100 pt-2 text-xs text-slate-500">{Object.entries(r.por_tipo).map(([k, v]: any) => `${TIPO_COMPROBANTE[k]}: ${S(v)}`).join(" · ")}</div>
+                <div className="border-t border-zinc-100 pt-2 text-xs text-zinc-500">{Object.entries(r.por_tipo).map(([k, v]: any) => `${TIPO_COMPROBANTE[k]}: ${S(v)}`).join(" · ")}</div>
               </div>
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function Reportes() {
                 <button className="btn-ghost btn-sm" onClick={() => descargarCSV(`top_productos_${desde}_${hasta}.csv`, [["Producto", "Unidades", "Venta", "Utilidad"], ...r.top_productos.map((p: any) => [p.producto, p.unidades, p.total, p.utilidad])])}><Download className="size-3.5" />CSV</button></div>
               <table className="tbl"><thead><tr><th>#</th><th>Producto</th><th className="num">Unidades</th><th className="num">Venta</th><th className="num">Utilidad</th></tr></thead>
                 <tbody>{r.top_productos.map((p: any, i: number) => (
-                  <tr key={i}><td className="text-slate-400">{i + 1}</td><td>{p.producto}</td><td className="num">{N(p.unidades)}</td><td className="num font-medium">{S(p.total)}</td>
+                  <tr key={i}><td className="text-zinc-400">{i + 1}</td><td>{p.producto}</td><td className="num">{N(p.unidades)}</td><td className="num font-medium">{S(p.total)}</td>
                     <td className={`num ${p.utilidad < 0 ? "text-rose-600" : "text-emerald-700"}`}>{S(p.utilidad)}</td></tr>
                 ))}</tbody></table>
             </div>
@@ -88,7 +88,7 @@ export default function Reportes() {
               <div className="card">
                 <div className="card-h"><p className="card-t">Ventas por usuario</p></div>
                 <table className="tbl"><tbody>{r.por_usuario.map((u: any, i: number) => (
-                  <tr key={i}><td>{u.usuario ?? "—"}</td><td className="num text-slate-500">{u.tickets} tickets</td><td className="num font-medium">{S(u.total)}</td></tr>
+                  <tr key={i}><td>{u.usuario ?? "—"}</td><td className="num text-zinc-500">{u.tickets} tickets</td><td className="num font-medium">{S(u.total)}</td></tr>
                 ))}</tbody></table>
               </div>
               <div className="card">
@@ -97,7 +97,7 @@ export default function Reportes() {
                   {Array.from({ length: 24 }, (_, h) => r.por_hora.find((x: any) => x.hora === h)).map((d: any, h: number) => (
                     <div key={h} className="flex flex-1 flex-col items-center gap-1">
                       <div className="w-full rounded-t bg-sky-500/80" style={{ height: `${d ? Math.max(2, (Number(d.total) / maxHora) * 90) : 0}px` }} title={d ? `${h}:00 · ${S(d.total)}` : ""} />
-                      <span className="text-[9px] text-slate-400">{h % 3 === 0 ? h : ""}</span>
+                      <span className="text-[9px] text-zinc-400">{h % 3 === 0 ? h : ""}</span>
                     </div>
                   ))}
                 </div>

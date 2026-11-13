@@ -46,15 +46,15 @@ export default function Sunat() {
   return (
     <div className="mx-auto max-w-[1400px]">
       <PageHeader title="Comprobantes electrónicos SUNAT" subtitle="Seguimiento del envío de boletas, facturas y notas de crédito"
-        actions={<button className="btn-primary" onClick={reenviarTodos} disabled={enviando !== null || !cfg?.configurado}>{enviando === "todos" ? <Spinner /> : <RefreshCw className="size-4" />}Reenviar pendientes</button>} />
+        actions={<button className="btn-primary" onClick={reenviarTodos} disabled={enviando !== null || !cfg?.configurado}>{enviando === "todos" ? <Spinner /> : <RefreshCw className="size-3.5" />}Reenviar pendientes</button>} />
       {cfg && !cfg.configurado && (
-        <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-[13px] text-amber-800">
+        <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-[13px] text-amber-800">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" />
           <div><p className="font-semibold">Facturación electrónica aún no conectada</p>
             <p>Las ventas se registran con normalidad y quedan como «pendiente». Cuando se configure el proveedor (variables NUBEFACT_RUTA y NUBEFACT_TOKEN en Vercel), use «Reenviar pendientes».</p></div>
         </div>
       )}
-      {cfg?.configurado && <p className="mb-3 flex items-center gap-1.5 text-[13px] text-emerald-700"><ShieldCheck className="size-4" />Conectado con {cfg.proveedor}</p>}
+      {cfg?.configurado && <p className="mb-3 flex items-center gap-1.5 text-[13px] text-emerald-700"><ShieldCheck className="size-3.5" />Conectado con {cfg.proveedor}</p>}
       <div className="mb-4 grid grid-cols-4 gap-4">
         <Stat label="Aceptados (31 días)" value={conteo.aceptado ?? 0} tone="green" />
         <Stat label="Pendientes / en proceso" value={(conteo.pendiente ?? 0) + (conteo.enviado ?? 0)} tone="amber" />
@@ -62,10 +62,10 @@ export default function Sunat() {
         <Stat label="Rechazados / observados" value={(conteo.rechazado ?? 0) + (conteo.observado ?? 0)} tone={conteo.rechazado ? "red" : "slate"} />
       </div>
       <div className="card">
-        <div className="flex gap-1 border-b border-slate-100 p-3">
-          <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-[12.5px]">
+        <div className="flex gap-1 border-b border-zinc-100 p-3">
+          <div className="flex gap-1 rounded-lg bg-zinc-100 p-1 text-[12.5px]">
             {[["pendientes", "Pendientes"], ["rechazados", "Rechazados / observados"], ["aceptados", "Aceptados"], ["todos", "Todos"]].map(([k, l]) => (
-              <button key={k} onClick={() => setFiltro(k)} className={`rounded-md px-2.5 py-1 ${filtro === k ? "bg-white font-medium shadow-sm" : "text-slate-600"}`}>{l}</button>
+              <button key={k} onClick={() => setFiltro(k)} className={`rounded-md px-2.5 py-1 ${filtro === k ? "bg-white font-medium shadow-sm" : "text-zinc-600"}`}>{l}</button>
             ))}
           </div>
         </div>
@@ -76,10 +76,10 @@ export default function Sunat() {
               {rows.map((v) => (
                 <tr key={v.id}>
                   <td><Link href={`/ventas/${v.id}`} className="font-medium text-marca-700 hover:underline">{comprobante(v.serie, v.numero)}</Link></td>
-                  <td>{TIPO_COMPROBANTE[v.tipo]}</td><td className="text-slate-500">{fechaHora(v.fecha)}</td>
+                  <td>{TIPO_COMPROBANTE[v.tipo]}</td><td className="text-zinc-500">{fechaHora(v.fecha)}</td>
                   <td className="max-w-48 truncate">{v.clientes?.nombre}</td><td className="num">{S(v.total)}</td>
                   <td><EstadoSunat e={v.sunat_estado} /></td>
-                  <td className="max-w-72 truncate text-xs text-slate-500" title={v.sunat_mensaje}>{v.sunat_mensaje ?? "—"}</td>
+                  <td className="max-w-72 truncate text-xs text-zinc-500" title={v.sunat_mensaje}>{v.sunat_mensaje ?? "—"}</td>
                   <td className="num">{v.sunat_intentos}</td>
                   <td className="whitespace-nowrap">
                     {v.sunat_pdf_url && <a className="btn-ghost btn-sm" href={v.sunat_pdf_url} target="_blank" title="PDF"><FileDown className="size-3.5" /></a>}

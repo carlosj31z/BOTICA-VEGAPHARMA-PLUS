@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "regions": ["gru1"],
-  "crons": [{ "path": "/api/sunat/reintentar", "schedule": "0 6 * * *" }]
+  "crons": [
+    { "path": "/api/sunat/reintentar", "schedule": "0 6 * * *" },
+    { "path": "/api/digemid/alertas", "schedule": "0 12 * * *" }
+  ]
 }

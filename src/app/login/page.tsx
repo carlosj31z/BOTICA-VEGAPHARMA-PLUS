@@ -1,7 +1,6 @@
 "use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Pill, ShieldCheck, FileCheck2, Boxes } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Spinner } from "@/components/ui";
 
@@ -24,9 +23,9 @@ function LoginForm() {
 
   return (
     <form onSubmit={entrar} className="w-full max-w-sm">
-      <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Iniciar sesión</h1>
-      <p className="mt-1 text-[13px] text-slate-500">Ingrese con el usuario asignado por el administrador.</p>
-      <div className="mt-6 space-y-3.5">
+      <h1 className="text-[18px] font-semibold tracking-tight text-zinc-900">Iniciar sesión</h1>
+      <p className="mt-1 text-[13px] text-zinc-500">Ingrese con el usuario asignado por el administrador.</p>
+      <div className="mt-5 space-y-3">
         <div>
           <label className="label">Correo</label>
           <input className="input h-10" type="email" autoComplete="username" autoFocus value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -36,7 +35,7 @@ function LoginForm() {
           <input className="input h-10" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-[13px] text-rose-700">{error}</p>}
-        <button className="btn-primary btn-lg w-full" disabled={cargando}>{cargando && <Spinner />}Ingresar</button>
+        <button className="btn-accent btn-lg w-full" disabled={cargando}>{cargando && <Spinner />}Ingresar</button>
       </div>
     </form>
   );
@@ -44,26 +43,18 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-marca-900 p-10 text-white lg:flex">
-        <div className="absolute -right-24 -top-24 size-96 rounded-full bg-marca-600/30 blur-3xl" />
-        <div className="relative flex items-center gap-3">
-          <div className="grid size-10 place-items-center rounded-xl bg-white/10 ring-1 ring-white/20"><Pill className="size-5" /></div>
-          <span className="text-lg font-semibold">Vega Pharma Plus</span>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 p-6">
+      <div className="mb-6 flex items-center gap-2.5">
+        <div className="grid size-9 place-items-center rounded-lg bg-marca-600 text-[13px] font-bold text-white">VP</div>
+        <div className="leading-tight">
+          <p className="text-[14px] font-semibold text-zinc-900">Vega Pharma Plus</p>
+          <p className="text-[11.5px] text-zinc-500">Sistema de gestión de botica</p>
         </div>
-        <div className="relative max-w-md">
-          <h2 className="text-3xl font-semibold leading-tight tracking-tight">La operación de tu botica, en regla y sin papeles.</h2>
-          <ul className="mt-8 space-y-4 text-[14px] text-marca-100">
-            <li className="flex gap-3"><FileCheck2 className="size-5 shrink-0 text-emerald-300" />Boletas y facturas electrónicas enviadas a SUNAT.</li>
-            <li className="flex gap-3"><Boxes className="size-5 shrink-0 text-emerald-300" />Lotes, vencimientos y kardex con salida FEFO automática.</li>
-            <li className="flex gap-3"><ShieldCheck className="size-5 shrink-0 text-emerald-300" />Recetas, controlados y Observatorio de Precios DIGEMID.</li>
-          </ul>
-        </div>
-        <p className="relative text-xs text-marca-200/60">© {new Date().getFullYear()} Botica Vega Pharma Plus</p>
       </div>
-      <div className="flex items-center justify-center bg-white p-8">
+      <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-7 shadow-[0_1px_3px_rgba(0,0,0,.04)]">
         <Suspense><LoginForm /></Suspense>
       </div>
+      <p className="mt-6 text-[11.5px] text-zinc-400">Comprobantes SUNAT · Registros DIGEMID · Lotes y vencimientos</p>
     </div>
   );
 }

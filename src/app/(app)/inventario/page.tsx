@@ -44,20 +44,20 @@ export default function Inventario() {
       <PageHeader title="Lotes y vencimientos" subtitle="Stock por lote con salida FEFO: se vende primero lo que vence primero"
         actions={<button className="btn-secondary" onClick={() => descargarCSV(`lotes_${filtro}.csv`, [["Producto", "Laboratorio", "Lote", "Vencimiento", "Días", "Stock", "Costo unit.", "Valor"],
           ...rows.map((l) => [`${l.productos.nombre} ${l.productos.concentracion ?? ""}`, l.productos.laboratorios?.nombre, l.numero_lote, l.fecha_vencimiento, dias(l.fecha_vencimiento), l.stock, l.costo_unitario, (l.stock * l.costo_unitario).toFixed(2)])])}>
-          <Download className="size-4" />Exportar</button>} />
+          <Download className="size-3.5" />Exportar</button>} />
       <div className="mb-4 grid grid-cols-3 gap-4">
         <Stat label="Lotes en la vista" value={N(rows.length)} />
         <Stat label="Unidades" value={N(rows.reduce((a, l) => a + l.stock, 0))} />
         <Stat label="Valor al costo" value={S(valor)} tone={filtro === "vencidos" && valor > 0 ? "red" : "slate"} hint={filtro === "vencidos" ? "Pérdida por vencimiento" : undefined} />
       </div>
       <div className="card">
-        <div className="flex items-center gap-2 border-b border-slate-100 p-3">
-          <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-[12.5px]">
+        <div className="flex items-center gap-2 border-b border-zinc-100 p-3">
+          <div className="flex gap-1 rounded-lg bg-zinc-100 p-1 text-[12.5px]">
             {[["por_vencer", `Por vencer (${alerta} días)`], ["vencidos", "Vencidos"], ["todos", "Todo el stock"]].map(([k, l]) => (
-              <button key={k} onClick={() => setFiltro(k)} className={`rounded-md px-2.5 py-1 ${filtro === k ? "bg-white font-medium shadow-sm" : "text-slate-600"}`}>{l}</button>
+              <button key={k} onClick={() => setFiltro(k)} className={`rounded-md px-2.5 py-1 ${filtro === k ? "bg-white font-medium shadow-sm" : "text-zinc-600"}`}>{l}</button>
             ))}
           </div>
-          <div className="relative w-80"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <div className="relative w-80"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <input className="input pl-8" placeholder="Buscar producto" value={q} onChange={(e) => setQ(e.target.value)} /></div>
           {cargando && <Spinner />}
           {filtro === "vencidos" && vencidos.length > 0 && <p className="ml-auto text-xs text-rose-600">Retire estos lotes del anaquel y registre la baja por vencimiento.</p>}
@@ -71,13 +71,13 @@ export default function Inventario() {
                   const d = dias(l.fecha_vencimiento);
                   return (
                     <tr key={l.id}>
-                      <td><Link href={`/kardex?producto=${l.producto_id}`} className="font-medium text-slate-900 hover:text-marca-700">{l.productos.nombre} {l.productos.concentracion}</Link></td>
-                      <td className="text-slate-500">{l.productos.laboratorios?.nombre}</td>
-                      <td className="font-mono text-xs">{l.numero_lote}</td>
+                      <td><Link href={`/kardex?producto=${l.producto_id}`} className="font-medium text-zinc-900 hover:text-marca-700">{l.productos.nombre} {l.productos.concentracion}</Link></td>
+                      <td className="text-zinc-500">{l.productos.laboratorios?.nombre}</td>
+                      <td className="font-mono text-xs">{l.numero_lote}{l.bloqueado && <span className="badge-red ml-1.5 font-sans" title={l.motivo_bloqueo ?? ""}>Bloqueado</span>}</td>
                       <td>{fecha(l.fecha_vencimiento)}</td>
                       <td>{d < 0 ? <span className="badge-red">Vencido hace {-d} d</span> : d <= 30 ? <span className="badge-red">{d} días</span> : d <= alerta ? <span className="badge-amber">{d} días</span> : <span className="badge-green">Vigente</span>}</td>
                       <td className="num font-medium">{N(l.stock)}</td>
-                      <td className="num text-slate-500">{S(l.costo_unitario)}</td>
+                      <td className="num text-zinc-500">{S(l.costo_unitario)}</td>
                       <td className="num">{S(l.stock * l.costo_unitario)}</td>
                       <td>{puede("admin", "quimico", "almacen") && <button className="btn-ghost btn-sm text-rose-600" onClick={() => setSalida(l)}><MinusCircle className="size-3.5" />Baja</button>}</td>
                     </tr>
@@ -110,7 +110,7 @@ function ModalSalida({ lote, onClose, onDone }: { lote: any; onClose: () => void
     <Modal open onClose={onClose} title={`Baja de stock · lote ${lote.numero_lote}`} size="sm"
       footer={<><button className="btn-secondary" onClick={onClose}>Cancelar</button><button className="btn-danger" onClick={ok} disabled={env}>Registrar baja</button></>}>
       <div className="space-y-3">
-        <p className="text-[13px] text-slate-600">{lote.productos.nombre} · stock del lote: <b>{lote.stock} u.</b></p>
+        <p className="text-[13px] text-zinc-600">{lote.productos.nombre} · stock del lote: <b>{lote.stock} u.</b></p>
         <Field label="Motivo"><select className="input" value={tipo} onChange={(e) => setTipo(e.target.value)}>
           <option value="vencimiento">Vencimiento</option><option value="merma">Merma / deterioro / rotura</option>
           <option value="devolucion_proveedor">Devolución al proveedor</option><option value="ajuste_salida">Ajuste por inventario (faltante)</option></select></Field>

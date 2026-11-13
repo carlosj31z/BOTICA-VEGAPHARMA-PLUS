@@ -44,7 +44,7 @@ export function CrudSimple({ tabla, titulo, subtitulo, campos, busqueda, orden, 
     <div className="mx-auto max-w-[1300px]">
       <PageHeader title={titulo} subtitle={subtitulo} actions={editable && <button className="btn-primary" onClick={() => setEdit(Object.fromEntries(campos.map((c) => [c.k, c.tipo === "check" ? true : c.opciones?.[0]?.[0] ?? ""])))}><Plus className="size-4" />Nuevo</button>} />
       <div className="card">
-        <div className="border-b border-slate-100 p-3"><div className="relative w-96"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+        <div className="border-b border-zinc-100 p-3"><div className="relative w-96"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
           <input className="input pl-8" placeholder="Buscar…" value={q} onChange={(e) => setQ(e.target.value)} /></div></div>
         {rows.length === 0 ? <Empty /> : (
           <table className="tbl">

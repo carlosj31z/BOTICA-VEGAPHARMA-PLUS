@@ -45,7 +45,7 @@ export default function Configuracion() {
   return (
     <div className="mx-auto max-w-[1000px] space-y-4">
       <PageHeader title="Configuración" subtitle="Datos del establecimiento que aparecen en comprobantes y reportes"
-        actions={<button className="btn-primary" onClick={guardar} disabled={env}>{env ? <Spinner /> : <Save className="size-4" />}Guardar cambios</button>} />
+        actions={<button className="btn-primary" onClick={guardar} disabled={env}>{env ? <Spinner /> : <Save className="size-3.5" />}Guardar cambios</button>} />
       <div className="card p-5">
         <p className="card-t mb-3">Empresa (SUNAT)</p>
         <div className="grid grid-cols-3 gap-3">
@@ -85,7 +85,7 @@ export default function Configuracion() {
               <td key={k}><input className="input h-8" maxLength={k === "nombre" ? 40 : 4} value={c[k]} onChange={(ev) => setCajas(cajas.map((x, j) => j === i ? { ...x, [k]: k === "nombre" ? ev.target.value : ev.target.value.toUpperCase() } : x))} /></td>
             ))}<td><input type="checkbox" checked={c.activo} onChange={(ev) => setCajas(cajas.map((x, j) => j === i ? { ...x, activo: ev.target.checked } : x))} /></td></tr>
           ))}</tbody></table>
-        <p className="mt-2 text-xs text-slate-500">Las series de boleta empiezan con B y las de factura con F (4 caracteres), según SUNAT. Cada caja usa sus propias series para evitar choques de numeración.</p>
+        <p className="mt-2 text-xs text-zinc-500">Las series de boleta empiezan con B y las de factura con F (4 caracteres), según SUNAT. Cada caja usa sus propias series para evitar choques de numeración.</p>
       </div>
     </div>
   );

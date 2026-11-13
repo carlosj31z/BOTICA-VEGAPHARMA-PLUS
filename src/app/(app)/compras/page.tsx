@@ -17,7 +17,7 @@ export default function Compras() {
   return (
     <div className="mx-auto max-w-[1300px]">
       <PageHeader title="Compras" subtitle="Ingresos de mercadería por factura de proveedor"
-        actions={<Link href="/compras/nueva" className="btn-primary"><Plus className="size-4" />Registrar compra</Link>} />
+        actions={<Link href="/compras/nueva" className="btn-primary"><Plus className="size-3.5" />Registrar compra</Link>} />
       <div className="card">
         {rows.length === 0 ? <Empty text="Aún no hay compras registradas" /> : (
           <table className="tbl">
@@ -26,16 +26,16 @@ export default function Compras() {
               {rows.map((c) => (
                 <Fragment key={c.id}>
                   <tr className="cursor-pointer" onClick={() => setAbierta(abierta === c.id ? null : c.id)}>
-                    <td>{abierta === c.id ? <ChevronDown className="size-4 text-slate-400" /> : <ChevronRight className="size-4 text-slate-400" />}</td>
+                    <td>{abierta === c.id ? <ChevronDown className="size-4 text-zinc-400" /> : <ChevronRight className="size-4 text-zinc-400" />}</td>
                     <td>{fecha(c.fecha)}</td>
-                    <td><p className="font-medium">{c.proveedores?.razon_social}</p><p className="text-xs text-slate-500">RUC {c.proveedores?.ruc}</p></td>
+                    <td><p className="font-medium">{c.proveedores?.razon_social}</p><p className="text-xs text-zinc-500">RUC {c.proveedores?.ruc}</p></td>
                     <td>{c.serie_numero}</td>
                     <td className="num">{c.compra_items.length}</td>
                     <td className="num">{S(c.subtotal)}</td><td className="num">{S(c.igv)}</td><td className="num font-medium">{S(c.total)}</td>
-                    <td className="text-slate-500">{c.perfiles?.nombre}</td>
+                    <td className="text-zinc-500">{c.perfiles?.nombre}</td>
                   </tr>
                   {abierta === c.id && (
-                    <tr><td colSpan={9} className="bg-slate-50/60 p-0">
+                    <tr><td colSpan={9} className="bg-zinc-50/60 p-0">
                       <table className="tbl text-[12.5px]"><thead><tr><th>Producto</th><th>Lote</th><th>Vencimiento</th><th className="num">Unidades</th><th className="num">Costo u.</th><th className="num">Total</th></tr></thead>
                         <tbody>{c.compra_items.map((i: any) => (
                           <tr key={i.id}><td>{i.productos?.nombre} {i.productos?.concentracion}</td><td className="font-mono">{i.numero_lote}</td><td>{fecha(i.fecha_vencimiento)}</td>

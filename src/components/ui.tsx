@@ -15,15 +15,15 @@ export function Modal({ open, onClose, title, children, footer, size = "md" }: {
   if (!open) return null;
   const w = { sm: "max-w-md", md: "max-w-xl", lg: "max-w-3xl", xl: "max-w-5xl" }[size];
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 p-6 pt-[8vh] backdrop-blur-[2px]"
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-900/30 p-6 pt-[8vh]"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className={clsx("w-full rounded-xl bg-white shadow-2xl", w)}>
-        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5">
-          <h2 className="text-[15px] font-semibold text-slate-900">{title}</h2>
-          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"><X className="size-4" /></button>
+      <div className={clsx("w-full rounded-lg bg-white shadow-xl ring-1 ring-zinc-900/5", w)}>
+        <div className="flex items-center justify-between border-b border-zinc-100 px-5 h-12">
+          <h2 className="text-[14px] font-semibold text-zinc-900">{title}</h2>
+          <button onClick={onClose} className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600"><X className="size-4" /></button>
         </div>
         <div className="px-5 py-4">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-3 rounded-b-xl">{footer}</div>}
+        {footer && <div className="flex justify-end gap-2 border-t border-zinc-100 px-5 py-3">{footer}</div>}
       </div>
     </div>
   );
@@ -31,12 +31,12 @@ export function Modal({ open, onClose, title, children, footer, size = "md" }: {
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: ReactNode }) {
   return (
-    <div className="mb-4 flex items-end justify-between gap-4">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-900">{title}</h1>
-        {subtitle && <p className="mt-0.5 text-[13px] text-slate-500">{subtitle}</p>}
+    <div className="mb-4 flex items-center justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="text-[17px] font-semibold tracking-tight text-zinc-900">{title}</h1>
+        {subtitle && <p className="text-[12.5px] text-zinc-500">{subtitle}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </div>
   );
 }
@@ -46,7 +46,7 @@ export function Field({ label, children, className, hint }: { label: string; chi
     <label className={clsx("block", className)}>
       <span className="label">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-[11px] text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-[11px] text-zinc-400">{hint}</span>}
     </label>
   );
 }
@@ -57,28 +57,22 @@ export function Spinner({ className }: { className?: string }) {
 
 export function Empty({ text = "Sin registros", icon }: { text?: string; icon?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-12 text-slate-400">
-      {icon ?? <Inbox className="size-8" />}
+    <div className="flex flex-col items-center justify-center gap-1.5 py-10 text-zinc-400">
+      {icon ?? <Inbox className="size-6" strokeWidth={1.5} />}
       <p className="text-[13px]">{text}</p>
     </div>
   );
 }
 
-export function Stat({ label, value, hint, icon, tone = "slate" }: {
+export function Stat({ label, value, hint, tone = "slate" }: {
   label: string; value: ReactNode; hint?: ReactNode; icon?: ReactNode; tone?: "slate" | "green" | "amber" | "red" | "blue";
 }) {
-  const tones = {
-    slate: "bg-slate-100 text-slate-600", green: "bg-emerald-50 text-emerald-600", amber: "bg-amber-50 text-amber-600",
-    red: "bg-rose-50 text-rose-600", blue: "bg-sky-50 text-sky-600",
-  };
+  const dot = { slate: "", green: "bg-emerald-500", amber: "bg-amber-500", red: "bg-rose-500", blue: "bg-sky-500" }[tone];
   return (
-    <div className="card p-4">
-      <div className="flex items-start justify-between">
-        <p className="text-xs font-medium text-slate-500">{label}</p>
-        {icon && <span className={clsx("rounded-lg p-1.5", tones[tone])}>{icon}</span>}
-      </div>
-      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-tight text-slate-900">{value}</p>
-      {hint && <p className="mt-0.5 text-xs text-slate-500">{hint}</p>}
+    <div className="card px-4 py-3">
+      <p className="flex items-center gap-1.5 text-[11.5px] font-medium text-zinc-500">{dot && <span className={clsx("size-1.5 rounded-full", dot)} />}{label}</p>
+      <p className="mt-0.5 text-[20px] font-semibold tabular-nums tracking-tight text-zinc-900">{value}</p>
+      {hint && <p className="text-[11.5px] text-zinc-500">{hint}</p>}
     </div>
   );
 }

@@ -33,18 +33,18 @@ export default function Usuarios() {
   return (
     <div className="mx-auto max-w-[1100px]">
       <PageHeader title="Usuarios" subtitle="Cada persona con su propio acceso: todo queda registrado con su nombre"
-        actions={<button className="btn-primary" onClick={() => setNuevo(true)}><Plus className="size-4" />Nuevo usuario</button>} />
+        actions={<button className="btn-primary" onClick={() => setNuevo(true)}><Plus className="size-3.5" />Nuevo usuario</button>} />
       <div className="card">
         <table className="tbl">
           <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Permisos</th><th>Estado</th><th>Alta</th><th /></tr></thead>
           <tbody>{rows.map((u) => (
             <tr key={u.id}>
               <td className="font-medium">{u.nombre}{u.id === perfil.id && <span className="badge-gray ml-2">Usted</span>}</td>
-              <td className="text-slate-500">{u.email}</td>
+              <td className="text-zinc-500">{u.email}</td>
               <td><select className="input h-8 w-48" value={u.rol} onChange={(e) => actualizar(u.id, { rol: e.target.value })}>{Object.entries(ROLES).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></td>
-              <td className="max-w-64 text-xs text-slate-500">{PERMISOS[u.rol]}</td>
+              <td className="max-w-64 text-xs text-zinc-500">{PERMISOS[u.rol]}</td>
               <td><button onClick={() => actualizar(u.id, { activo: !u.activo })} className={u.activo ? "badge-green" : "badge-red"}>{u.activo ? "Activo" : "Inactivo"}</button></td>
-              <td className="text-xs text-slate-500">{fechaHora(u.created_at)}</td>
+              <td className="text-xs text-zinc-500">{fechaHora(u.created_at)}</td>
               <td><button className="btn-ghost btn-sm" title="Cambiar contraseña" onClick={() => setClave(u)}><KeyRound className="size-3.5" /></button></td>
             </tr>
           ))}</tbody>

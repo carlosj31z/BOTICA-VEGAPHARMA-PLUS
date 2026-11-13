@@ -41,27 +41,28 @@ export default function VentaDetalle({ params }: { params: Promise<{ id: string 
 
   return (
     <div className="mx-auto max-w-[1100px]">
-      <Link href="/ventas" className="mb-2 inline-flex items-center gap-1 text-[13px] text-slate-500 hover:text-slate-800"><ArrowLeft className="size-3.5" />Historial</Link>
+      <Link href="/ventas" className="mb-2 inline-flex items-center gap-1 text-[13px] text-zinc-500 hover:text-zinc-800"><ArrowLeft className="size-3.5" />Historial</Link>
       <PageHeader title={`${TIPO_COMPROBANTE[v.tipo]} ${comprobante(v.serie, v.numero)}`} subtitle={`${fechaHora(v.fecha)} · atendió ${v.perfiles?.nombre ?? "—"}`}
         actions={<>
-          {electronico && !["aceptado", "anulado"].includes(v.sunat_estado) && <button className="btn-secondary" onClick={enviarSunat} disabled={enviando}>{enviando ? <Spinner /> : <Send className="size-4" />}Enviar a SUNAT</button>}
-          {v.sunat_pdf_url && <a className="btn-secondary" href={v.sunat_pdf_url} target="_blank"><FileDown className="size-4" />PDF</a>}
-          {["01", "03"].includes(v.tipo) && !tieneNC && puede("admin", "quimico") && <button className="btn-secondary" onClick={() => setNc(true)}><Undo2 className="size-4" />Nota de crédito</button>}
-          {v.tipo === "NV" && !v.anulada && puede("admin", "quimico") && <button className="btn-secondary text-rose-600" onClick={() => setAnular(true)}><Ban className="size-4" />Anular</button>}
-          <button className="btn-primary" onClick={() => window.open(`/ventas/${v.id}/ticket`, "ticket", "width=420,height=700")}><Printer className="size-4" />Imprimir</button>
+          {electronico && !["aceptado", "anulado"].includes(v.sunat_estado) && <button className="btn-secondary" onClick={enviarSunat} disabled={enviando}>{enviando ? <Spinner /> : <Send className="size-3.5" />}Enviar a SUNAT</button>}
+          {v.sunat_pdf_url && <a className="btn-secondary" href={v.sunat_pdf_url} target="_blank"><FileDown className="size-3.5" />PDF</a>}
+          {["01", "03"].includes(v.tipo) && !tieneNC && puede("admin", "quimico") && <button className="btn-secondary" onClick={() => setNc(true)}><Undo2 className="size-3.5" />Nota de crédito</button>}
+          {!v.anulada && puede("admin", "quimico") && (v.tipo === "NV" || (["01", "03"].includes(v.tipo) && !tieneNC && (v.sunat_estado === "rechazado" || Date.now() - new Date(v.fecha).getTime() < 7 * 864e5)))
+            && <button className="btn-danger" onClick={() => setAnular(true)}><Ban className="size-3.5" />Anular</button>}
+          <button className="btn-primary" onClick={() => window.open(`/ventas/${v.id}/ticket`, "ticket", "width=420,height=700")}><Printer className="size-3.5" />Imprimir</button>
         </>} />
 
       <div className="grid grid-cols-3 gap-4">
         <div className="card p-4">
           <p className="label">Cliente</p>
-          <p className="font-medium text-slate-900">{v.clientes.nombre}</p>
-          <p className="text-[13px] text-slate-500">{TIPO_DOC[v.clientes.tipo_documento]} {v.clientes.tipo_documento !== "0" && v.clientes.numero_documento}</p>
-          {v.clientes.direccion && <p className="text-[13px] text-slate-500">{v.clientes.direccion}</p>}
+          <p className="font-medium text-zinc-900">{v.clientes.nombre}</p>
+          <p className="text-[13px] text-zinc-500">{TIPO_DOC[v.clientes.tipo_documento]} {v.clientes.tipo_documento !== "0" && v.clientes.numero_documento}</p>
+          {v.clientes.direccion && <p className="text-[13px] text-zinc-500">{v.clientes.direccion}</p>}
         </div>
         <div className="card p-4">
           <p className="label">Estado electrónico</p>
           <div className="flex items-center gap-2"><EstadoSunat e={v.sunat_estado} />{v.anulada && <span className="badge-red">Anulada</span>}</div>
-          {v.sunat_mensaje && <p className="mt-1.5 text-xs text-slate-500">{v.sunat_mensaje}</p>}
+          {v.sunat_mensaje && <p className="mt-1.5 text-xs text-zinc-500">{v.sunat_mensaje}</p>}
           {v.ref && <p className="mt-1.5 text-xs">Modifica a <Link className="text-marca-700 hover:underline" href={`/ventas/${v.ref.id}`}>{comprobante(v.ref.serie, v.ref.numero)}</Link> · {v.motivo_nota}</p>}
           {(v.notas ?? []).map((n: any) => <p key={n.id} className="mt-1.5 text-xs">Nota de crédito <Link className="text-marca-700 hover:underline" href={`/ventas/${n.id}`}>{comprobante(n.serie, n.numero)}</Link></p>)}
         </div>
@@ -69,7 +70,7 @@ export default function VentaDetalle({ params }: { params: Promise<{ id: string 
           <p className="label">Pagos</p>
           {(v.pagos ?? []).map((p: any) => (
             <div key={p.id} className="flex justify-between text-[13px]">
-              <span>{METODO_PAGO[p.metodo]}{p.pos_proveedor && <span className="text-slate-500"> · {p.pos_proveedor}</span>}{p.numero_operacion && <span className="text-slate-500"> #{p.numero_operacion}</span>}</span>
+              <span>{METODO_PAGO[p.metodo]}{p.pos_proveedor && <span className="text-zinc-500"> · {p.pos_proveedor}</span>}{p.numero_operacion && <span className="text-zinc-500"> #{p.numero_operacion}</span>}</span>
               <span className="tabular-nums">{S(p.monto)}</span>
             </div>
           ))}
@@ -95,7 +96,7 @@ export default function VentaDetalle({ params }: { params: Promise<{ id: string 
             {v.venta_items.map((i: any) => (
               <tr key={i.id}>
                 <td className="font-medium">{i.descripcion}</td>
-                <td className="text-xs text-slate-500">{(i.venta_item_lotes ?? []).map((l: any) => `${l.lotes.numero_lote} (${l.cantidad} u., v. ${fecha(l.lotes.fecha_vencimiento)})`).join(", ")}</td>
+                <td className="text-xs text-zinc-500">{(i.venta_item_lotes ?? []).map((l: any) => `${l.lotes.numero_lote} (${l.cantidad} u., v. ${fecha(l.lotes.fecha_vencimiento)})`).join(", ")}</td>
                 <td className="num">{Number(i.cantidad)} {i.unidad === "BX" ? "cj" : "u"}</td>
                 <td className="num">{S(i.precio_unitario)}</td>
                 <td className="num">{Number(i.descuento) ? S(i.descuento) : "—"}</td>
@@ -106,16 +107,16 @@ export default function VentaDetalle({ params }: { params: Promise<{ id: string 
             ))}
           </tbody>
           <tfoot>
-            <tr><td colSpan={6} /><td className="num text-slate-500">Op. gravada</td><td className="num">{S(v.op_gravada)}</td></tr>
-            {Number(v.op_exonerada) > 0 && <tr><td colSpan={6} /><td className="num text-slate-500">Exonerada</td><td className="num">{S(v.op_exonerada)}</td></tr>}
-            <tr><td colSpan={6} /><td className="num text-slate-500">IGV</td><td className="num">{S(v.igv)}</td></tr>
+            <tr><td colSpan={6} /><td className="num text-zinc-500">Op. gravada</td><td className="num">{S(v.op_gravada)}</td></tr>
+            {Number(v.op_exonerada) > 0 && <tr><td colSpan={6} /><td className="num text-zinc-500">Exonerada</td><td className="num">{S(v.op_exonerada)}</td></tr>}
+            <tr><td colSpan={6} /><td className="num text-zinc-500">IGV</td><td className="num">{S(v.igv)}</td></tr>
             <tr><td colSpan={6} /><td className="num font-semibold">Total</td><td className="num text-base font-bold">{S(v.total)}</td></tr>
           </tfoot>
         </table>
       </div>
 
       {nc && <ModalNC venta={v} onClose={() => setNc(false)} onDone={(nid) => { setNc(false); location.href = `/ventas/${nid}`; }} />}
-      {anular && <ModalAnular id={v.id} onClose={() => setAnular(false)} onDone={() => { setAnular(false); cargar(); }} />}
+      {anular && <ModalAnular id={v.id} tipo={v.tipo} onClose={() => setAnular(false)} onDone={() => { setAnular(false); cargar(); }} />}
     </div>
   );
 }
@@ -147,16 +148,29 @@ function ModalNC({ venta, onClose, onDone }: { venta: any; onClose: () => void; 
   );
 }
 
-function ModalAnular({ id, onClose, onDone }: { id: number; onClose: () => void; onDone: () => void }) {
+function ModalAnular({ id, tipo, onClose, onDone }: { id: number; tipo: string; onClose: () => void; onDone: () => void }) {
   const [motivo, setMotivo] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const electronico = tipo !== "NV";
   async function ok() {
     if (!motivo.trim()) return toast.error("Indique el motivo.");
+    setEnviando(true);
+    if (electronico) {
+      const r = await fetch("/api/sunat/anular", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ venta_id: id, motivo: motivo.trim() }) }).catch(() => null);
+      const d = await r?.json().catch(() => ({}));
+      setEnviando(false);
+      if (!r?.ok) return toast.error(d?.error ?? "No se pudo anular.");
+      toast.ok(`Comprobante anulado. ${d.mensaje ?? ""}`); onDone(); return;
+    }
     const { error } = await supabaseBrowser().rpc("anular_nota_venta", { p_venta_id: id, p_motivo: motivo.trim() });
+    setEnviando(false);
     if (error) return toast.error(errorMsg(error));
     toast.ok("Nota de venta anulada y stock devuelto"); onDone();
   }
   return (
-    <Modal open onClose={onClose} title="Anular nota de venta" size="sm" footer={<><button className="btn-secondary" onClick={onClose}>Cancelar</button><button className="btn-danger" onClick={ok}>Anular</button></>}>
+    <Modal open onClose={onClose} title={electronico ? "Anular comprobante ante SUNAT" : "Anular nota de venta"} size="sm"
+      footer={<><button className="btn-ghost" onClick={onClose}>Cancelar</button><button className="btn-danger" onClick={ok} disabled={enviando}>{enviando && <Spinner />}Anular</button></>}>
+      {electronico && <p className="mb-3 text-[12.5px] text-zinc-600">Se envía la comunicación de baja a SUNAT y el stock vuelve a sus lotes. Úselo solo si la venta no se concretó (error de emisión, cliente equivocado). Si el cliente devolvió productos, emita una nota de crédito.</p>}
       <Field label="Motivo"><textarea className="input" rows={2} autoFocus value={motivo} onChange={(e) => setMotivo(e.target.value)} /></Field>
     </Modal>
   );

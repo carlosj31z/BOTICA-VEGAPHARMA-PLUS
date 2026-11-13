@@ -6,6 +6,7 @@ export interface Producto {
   laboratorio_id: number | null; categoria_id: number | null; registro_sanitario: string | null; codigo_digemid: string | null;
   condicion_venta: "libre" | "receta" | "receta_retenida" | "controlado"; lista_control: string | null;
   unidades_por_empaque: number; precio_unidad: number; precio_empaque: number; costo_promedio: number;
+  unidades_por_blister?: number; precio_blister?: number;
   afectacion_igv: "gravado" | "exonerado" | "inafecto"; stock_minimo: number; ubicacion: string | null;
   refrigerado: boolean; activo: boolean;
   laboratorio?: string | null; categoria?: string | null; stock?: number; stock_vendible?: number; proximo_vencimiento?: string | null;

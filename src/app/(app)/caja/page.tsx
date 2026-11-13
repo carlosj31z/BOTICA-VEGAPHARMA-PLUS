@@ -46,8 +46,8 @@ export default function Caja() {
       <PageHeader title="Caja y turnos" subtitle="Apertura, movimientos de efectivo y arqueo de cierre" />
       {!turno ? (
         <div className="card mx-auto max-w-lg p-6">
-          <div className="flex items-center gap-3"><span className="rounded-xl bg-marca-50 p-2.5 text-marca-600"><LockOpen className="size-5" /></span>
-            <div><p className="font-semibold text-slate-900">Abrir turno de caja</p><p className="text-[13px] text-slate-500">Cuente el efectivo inicial (sencillo) antes de empezar.</p></div></div>
+          <div className="flex items-center gap-3"><span className="rounded-lg bg-marca-50 p-2.5 text-marca-600"><LockOpen className="size-5" /></span>
+            <div><p className="font-semibold text-zinc-900">Abrir turno de caja</p><p className="text-[13px] text-zinc-500">Cuente el efectivo inicial (sencillo) antes de empezar.</p></div></div>
           <div className="mt-5 grid grid-cols-2 gap-3">
             <Field label="Caja"><select className="input" value={cajaId ?? ""} onChange={(e) => setCajaId(Number(e.target.value))}>
               {cajas.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}</select></Field>
@@ -59,7 +59,7 @@ export default function Caja() {
       ) : (
         <>
           <div className="grid grid-cols-4 gap-4">
-            <Stat label="Ventas del turno" value={S(resumen?.neto)} hint={`${resumen?.ventas ?? 0} comprobantes${resumen?.devoluciones > 0 ? ` · devoluciones ${S(resumen.devoluciones)}` : ""}`} tone="green" icon={<Wallet className="size-4" />} />
+            <Stat label="Ventas del turno" value={S(resumen?.neto)} hint={`${resumen?.ventas ?? 0} comprobantes${resumen?.devoluciones > 0 ? ` · devoluciones ${S(resumen.devoluciones)}` : ""}`} tone="green" icon={<Wallet className="size-3.5" />} />
             <Stat label="Efectivo esperado en caja" value={S(resumen?.efectivo_esperado)} hint={`Apertura ${S(resumen?.monto_apertura)}`} tone="blue" />
             <Stat label="Ingresos de caja" value={S(resumen?.ingresos)} />
             <Stat label="Egresos de caja" value={S(resumen?.egresos)} />
@@ -76,10 +76,10 @@ export default function Caja() {
                 <button className="btn-secondary flex-1" onClick={() => setModalMov("ingreso")}><ArrowDownCircle className="size-4 text-emerald-600" />Ingreso</button>
                 <button className="btn-secondary flex-1" onClick={() => setModalMov("egreso")}><ArrowUpCircle className="size-4 text-rose-600" />Egreso / gasto</button>
               </div>
-              <div className="border-t border-slate-100 p-3"><button className="btn-danger w-full" onClick={() => setCerrar(true)}><Lock className="size-4" />Cerrar turno y arquear</button></div>
+              <div className="border-t border-zinc-100 p-3"><button className="btn-danger w-full" onClick={() => setCerrar(true)}><Lock className="size-3.5" />Cerrar turno y arquear</button></div>
             </div>
             <div className="card">
-              <div className="card-h"><p className="card-t">Movimientos de efectivo del turno</p><span className="text-xs text-slate-500">Abierto {fechaHora(turno.abierto_at)}</span></div>
+              <div className="card-h"><p className="card-t">Movimientos de efectivo del turno</p><span className="text-xs text-zinc-500">Abierto {fechaHora(turno.abierto_at)}</span></div>
               {movs.length === 0 ? <Empty text="Sin ingresos ni egresos registrados" /> : (
                 <table className="tbl"><thead><tr><th>Hora</th><th>Tipo</th><th>Concepto</th><th className="num">Monto</th></tr></thead><tbody>
                   {movs.map((m) => <tr key={m.id}><td>{fechaHora(m.created_at)}</td><td><span className={m.tipo === "ingreso" ? "badge-green" : "badge-red"}>{m.tipo}</span></td><td>{m.concepto}</td><td className="num">{S(m.monto)}</td></tr>)}
@@ -162,19 +162,19 @@ function ModalCierre({ turnoId, esperado, onClose, onDone }: { turnoId: number; 
   return (
     <Modal open onClose={onClose} title="Arqueo y cierre de turno" size="md"
       footer={<><button className="btn-secondary" onClick={onClose}>Cancelar</button><button className="btn-danger" onClick={cerrar} disabled={env}>{env && <Spinner />}Cerrar turno</button></>}>
-      <p className="mb-3 text-[13px] text-slate-500">Cuente el efectivo por denominación. El sistema calcula el total y la diferencia.</p>
+      <p className="mb-3 text-[13px] text-zinc-500">Cuente el efectivo por denominación. El sistema calcula el total y la diferencia.</p>
       <div className="grid grid-cols-4 gap-2">
         {DENOM.map((d) => (
-          <label key={d} className="flex items-center gap-2 rounded-lg border border-slate-200 px-2 py-1.5">
-            <span className="w-14 text-xs font-medium text-slate-600">{d >= 10 ? `S/ ${d}` : `S/ ${d.toFixed(2)}`}</span>
+          <label key={d} className="flex items-center gap-2 rounded-lg border border-zinc-200 px-2 py-1.5">
+            <span className="w-14 text-xs font-medium text-zinc-600">{d >= 10 ? `S/ ${d}` : `S/ ${d.toFixed(2)}`}</span>
             <input className="input h-7 px-2 text-right tabular-nums" inputMode="numeric" value={cant[d] ?? ""} onChange={(e) => setCant({ ...cant, [d]: e.target.value.replace(/\D/g, "") })} />
           </label>
         ))}
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-3 rounded-lg bg-slate-50 p-3 text-center">
-        <div><p className="text-xs text-slate-500">Esperado</p><p className="text-lg font-semibold tabular-nums">{S(esperado)}</p></div>
-        <div><p className="text-xs text-slate-500">Contado</p><p className="text-lg font-semibold tabular-nums">{S(contado)}</p></div>
-        <div><p className="text-xs text-slate-500">Diferencia</p><p className={`text-lg font-semibold tabular-nums ${dif < 0 ? "text-rose-600" : dif > 0 ? "text-amber-600" : "text-emerald-600"}`}>{S(dif)}</p></div>
+      <div className="mt-4 grid grid-cols-3 gap-3 rounded-lg bg-zinc-50 p-3 text-center">
+        <div><p className="text-xs text-zinc-500">Esperado</p><p className="text-lg font-semibold tabular-nums">{S(esperado)}</p></div>
+        <div><p className="text-xs text-zinc-500">Contado</p><p className="text-lg font-semibold tabular-nums">{S(contado)}</p></div>
+        <div><p className="text-xs text-zinc-500">Diferencia</p><p className={`text-lg font-semibold tabular-nums ${dif < 0 ? "text-rose-600" : dif > 0 ? "text-amber-600" : "text-emerald-600"}`}>{S(dif)}</p></div>
       </div>
       <Field label="Observación" className="mt-3"><textarea className="input" rows={2} value={obs} onChange={(e) => setObs(e.target.value)} /></Field>
     </Modal>

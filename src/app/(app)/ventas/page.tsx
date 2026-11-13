@@ -42,16 +42,16 @@ export default function Ventas() {
   return (
     <div className="mx-auto max-w-[1400px]">
       <PageHeader title="Historial de ventas" subtitle={`${filtradas.length} comprobantes · venta neta ${S(total)}`}
-        actions={<button className="btn-secondary" onClick={exportar}><Download className="size-4" />Exportar CSV</button>} />
+        actions={<button className="btn-secondary" onClick={exportar}><Download className="size-3.5" />Exportar CSV</button>} />
       <div className="card">
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 p-3">
+        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-100 p-3">
           <input type="date" className="input w-40" value={desde} onChange={(e) => setDesde(e.target.value)} />
-          <span className="text-slate-400">a</span>
+          <span className="text-zinc-400">a</span>
           <input type="date" className="input w-40" value={hasta} onChange={(e) => setHasta(e.target.value)} />
           <select className="input w-44" value={tipo} onChange={(e) => setTipo(e.target.value)}>
             <option value="">Todos los tipos</option>{Object.entries(TIPO_COMPROBANTE).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <div className="relative ml-auto w-72"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+          <div className="relative ml-auto w-72"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <input className="input pl-8" placeholder="Comprobante, cliente o documento" value={q} onChange={(e) => setQ(e.target.value)} /></div>
           {cargando && <Spinner />}
         </div>
@@ -63,10 +63,10 @@ export default function Ventas() {
                 <tr key={v.id} className={v.anulada ? "opacity-50" : ""}>
                   <td><Link href={`/ventas/${v.id}`} className="font-medium text-marca-700 hover:underline">{comprobante(v.serie, v.numero)}</Link></td>
                   <td>{TIPO_COMPROBANTE[v.tipo]}{v.anulada && <span className="badge-red ml-1">Anulada</span>}</td>
-                  <td className="whitespace-nowrap text-slate-500">{fechaHora(v.fecha)}</td>
+                  <td className="whitespace-nowrap text-zinc-500">{fechaHora(v.fecha)}</td>
                   <td className="max-w-56 truncate">{v.clientes?.nombre}</td>
-                  <td className="text-xs text-slate-500">{(v.pagos ?? []).map((p: any) => METODO_PAGO[p.metodo]).join(" + ")}</td>
-                  <td className="text-slate-500">{v.perfiles?.nombre}</td>
+                  <td className="text-xs text-zinc-500">{(v.pagos ?? []).map((p: any) => METODO_PAGO[p.metodo]).join(" + ")}</td>
+                  <td className="text-zinc-500">{v.perfiles?.nombre}</td>
                   <td><EstadoSunat e={v.sunat_estado} /></td>
                   <td className="num font-medium">{v.tipo === "07" ? "-" : ""}{S(v.total)}</td>
                   <td><button className="btn-ghost btn-sm" title="Reimprimir" onClick={() => window.open(`/ventas/${v.id}/ticket`, "ticket", "width=420,height=700")}><Printer className="size-3.5" /></button></td>

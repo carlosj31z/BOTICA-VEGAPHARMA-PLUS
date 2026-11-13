@@ -64,9 +64,9 @@ export default function NuevaCompra() {
 
   return (
     <div className="mx-auto max-w-[1400px]">
-      <Link href="/compras" className="mb-2 inline-flex items-center gap-1 text-[13px] text-slate-500 hover:text-slate-800"><ArrowLeft className="size-3.5" />Compras</Link>
+      <Link href="/compras" className="mb-2 inline-flex items-center gap-1 text-[13px] text-zinc-500 hover:text-zinc-800"><ArrowLeft className="size-3.5" />Compras</Link>
       <PageHeader title="Registrar compra" subtitle="Cada ítem crea o incrementa su lote y queda en el kardex"
-        actions={<button className="btn-primary" onClick={guardar} disabled={guardando}>{guardando ? <Spinner /> : <Save className="size-4" />}Guardar compra</button>} />
+        actions={<button className="btn-primary" onClick={guardar} disabled={guardando}>{guardando ? <Spinner /> : <Save className="size-3.5" />}Guardar compra</button>} />
       <div className="card grid grid-cols-6 gap-3 p-4">
         <Field label="Proveedor *" className="col-span-2"><select className="input" value={cab.proveedor_id} onChange={(e) => setCab({ ...cab, proveedor_id: e.target.value })}>
           <option value="">Seleccione…</option>{proveedores.map((p) => <option key={p.id} value={p.id}>{p.razon_social} · {p.ruc}</option>)}</select>
@@ -79,12 +79,12 @@ export default function NuevaCompra() {
       </div>
 
       <div className="card mt-4">
-        <div className="relative border-b border-slate-100 p-3">
-          <div className="relative w-[30rem]"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+        <div className="relative border-b border-zinc-100 p-3">
+          <div className="relative w-[30rem]"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <input className="input pl-8" placeholder="Agregar producto por nombre o código de barras…" value={q} onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && ops[0] && agregar(ops[0])} /></div>
-          {ops.length > 0 && <div className="absolute left-3 top-full z-20 mt-1 w-[30rem] rounded-lg border border-slate-200 bg-white shadow-lg">
-            {ops.map((o) => <button key={o.id} onClick={() => agregar(o)} className="block w-full px-3 py-2 text-left text-[13px] hover:bg-slate-50">{o.nombre} {o.concentracion} <span className="text-slate-400">{o.presentacion}</span></button>)}</div>}
+          {ops.length > 0 && <div className="absolute left-3 top-full z-20 mt-1 w-[30rem] rounded-lg border border-zinc-200 bg-white shadow-lg">
+            {ops.map((o) => <button key={o.id} onClick={() => agregar(o)} className="block w-full px-3 py-2 text-left text-[13px] hover:bg-zinc-50">{o.nombre} {o.concentracion} <span className="text-zinc-400">{o.presentacion}</span></button>)}</div>}
         </div>
         {items.length === 0 ? <Empty text="Agregue los productos de la factura" /> : (
           <table className="tbl">
@@ -93,7 +93,7 @@ export default function NuevaCompra() {
             <tbody>
               {items.map((i) => (
                 <tr key={i.key}>
-                  <td><p className="font-medium">{i.producto.nombre} {i.producto.concentracion}</p><p className="text-xs text-slate-500">Actual: {S(i.producto.precio_unidad)} u. · {S(i.producto.precio_empaque)} cj.</p></td>
+                  <td><p className="font-medium">{i.producto.nombre} {i.producto.concentracion}</p><p className="text-xs text-zinc-500">Actual: {S(i.producto.precio_unidad)} u. · {S(i.producto.precio_empaque)} cj.</p></td>
                   <td><input className="input h-8" value={i.numero_lote} onChange={(e) => upd(i.key, { numero_lote: e.target.value.toUpperCase() })} /></td>
                   <td><input type="date" className="input h-8" value={i.fecha_vencimiento} onChange={(e) => upd(i.key, { fecha_vencimiento: e.target.value })} /></td>
                   <td><div className="flex gap-1"><input className="input h-8 w-20 text-right" inputMode="numeric" value={i.cantidad} onChange={(e) => upd(i.key, { cantidad: e.target.value.replace(/[^\d]/g, "") })} />
@@ -103,13 +103,13 @@ export default function NuevaCompra() {
                   <td className="num">{S((parseFloat(i.cantidad) || 0) * costoSinIgv(i))}</td>
                   <td><div className="flex gap-1"><input className="input h-8 text-right" placeholder="Unidad" value={i.nuevo_precio_unidad ?? ""} onChange={(e) => upd(i.key, { nuevo_precio_unidad: e.target.value })} />
                     {i.producto.unidades_por_empaque > 1 && <input className="input h-8 text-right" placeholder="Caja" value={i.nuevo_precio_empaque ?? ""} onChange={(e) => upd(i.key, { nuevo_precio_empaque: e.target.value })} />}</div></td>
-                  <td><button onClick={() => setItems((x) => x.filter((y) => y.key !== i.key))} className="text-slate-400 hover:text-rose-600"><Trash2 className="size-4" /></button></td>
+                  <td><button onClick={() => setItems((x) => x.filter((y) => y.key !== i.key))} className="text-zinc-400 hover:text-rose-600"><Trash2 className="size-3.5" /></button></td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr><td colSpan={5} className="num text-slate-500">Subtotal</td><td className="num">{S(subtotal)}</td><td colSpan={2} /></tr>
-              <tr><td colSpan={5} className="num text-slate-500">IGV 18%</td><td className="num">{S(subtotal * 0.18)}</td><td colSpan={2} /></tr>
+              <tr><td colSpan={5} className="num text-zinc-500">Subtotal</td><td className="num">{S(subtotal)}</td><td colSpan={2} /></tr>
+              <tr><td colSpan={5} className="num text-zinc-500">IGV 18%</td><td className="num">{S(subtotal * 0.18)}</td><td colSpan={2} /></tr>
               <tr><td colSpan={5} className="num font-semibold">Total</td><td className="num font-bold">{S(subtotal * 1.18)}</td><td colSpan={2} /></tr>
             </tfoot>
           </table>
