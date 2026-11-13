@@ -6,6 +6,9 @@ import { supabaseBrowser } from "@/lib/supabase/client";
 import { PageHeader, Empty, Spinner } from "@/components/ui";
 import { S, N, fechaHora } from "@/lib/format";
 import { descargarCSV } from "@/lib/csv";
+import { excelKardex12_1 } from "@/lib/kardex-sunat";
+import { useApp } from "@/components/app-context";
+import { toast } from "@/components/toast";
 
 const TIPOS: Record<string, [string, string]> = {
   inventario_inicial: ["Inventario inicial", "badge-blue"], compra: ["Compra", "badge-green"], venta: ["Venta", "badge-gray"],
@@ -43,9 +46,9 @@ function KardexInner() {
   return (
     <div className="mx-auto max-w-[1400px]">
       <PageHeader title="Kardex" subtitle="Movimientos valorizados por producto y lote"
-        actions={prod && <button className="btn-secondary" onClick={() => descargarCSV(`kardex_${prod.codigo ?? prod.id}.csv`, [["Fecha", "Tipo", "Referencia", "Lote", "Vencimiento", "Entrada", "Salida", "Saldo", "Costo unit.", "Usuario", "Nota"],
+        actions={<><Formato121 />{prod && <button className="btn-secondary" onClick={() => descargarCSV(`kardex_${prod.codigo ?? prod.id}.csv`, [["Fecha", "Tipo", "Referencia", "Lote", "Vencimiento", "Entrada", "Salida", "Saldo", "Costo unit.", "Usuario", "Nota"],
           ...[...movs].reverse().map((m) => [fechaHora(m.created_at), TIPOS[m.tipo]?.[0], m.referencia, m.lotes?.numero_lote, m.lotes?.fecha_vencimiento, m.cantidad > 0 ? m.cantidad : "", m.cantidad < 0 ? -m.cantidad : "", m.saldo, m.costo_unitario, m.perfiles?.nombre, m.nota])])}>
-          <Download className="size-3.5" />Exportar</button>} />
+          <Download className="size-3.5" />Exportar</button>}</>} />
       <div className="card">
         <div className="relative border-b border-zinc-100 p-3">
           <div className="relative w-[28rem]"><Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
@@ -86,3 +89,40 @@ function KardexInner() {
 }
 
 export default function Kardex() { return <Suspense><KardexInner /></Suspense>; }
+
+/** Descarga el Formato 12.1 SUNAT de un mes (todos los productos) en Excel. */
+function Formato121() {
+  const { empresa } = useApp();
+  const hoy = new Date();
+  const [mes, setMes] = useState(`${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}`);
+  const [gen, setGen] = useState(false);
+  async function generar() {
+    setGen(true);
+    try {
+      const sb = supabaseBrowser();
+      const [a, m] = mes.split("-").map(Number);
+      const ini = new Date(Date.UTC(a, m - 1, 1, 5)).toISOString(), fin = new Date(Date.UTC(a, m, 1, 5)).toISOString();
+      const traer = async (desde: string, hasta?: string) => {
+        const out: any[] = [];
+        for (let i = 0; ; i += 1000) {
+          let q = sb.from("movimientos").select("producto_id,tipo,cantidad,referencia,created_at").gte("created_at", desde).order("id").range(i, i + 999);
+          if (hasta) q = q.lt("created_at", hasta);
+          const { data, error } = await q; if (error) throw error;
+          out.push(...(data ?? [])); if (!data || data.length < 1000) break;
+        }
+        return out;
+      };
+      const [movs, post, prods] = await Promise.all([traer(ini, fin), traer(fin), sb.from("v_productos").select("id,codigo,nombre,concentracion,stock").order("nombre").limit(10000)]);
+      await excelKardex12_1({ anio: a, mes: m, empresa, movs, movsPosteriores: post,
+        productos: (prods.data ?? []).map((p: any) => ({ id: p.id, codigo: p.codigo, nombre: p.nombre, concentracion: p.concentracion, stock_actual: Number(p.stock ?? 0) })) });
+      toast.ok("Formato 12.1 descargado");
+    } catch (e: any) { toast.error(e?.message ?? "No se pudo generar el formato"); }
+    setGen(false);
+  }
+  return (
+    <div className="flex items-center gap-1.5">
+      <input type="month" className="input w-36" value={mes} onChange={(e) => setMes(e.target.value)} />
+      <button className="btn-secondary" onClick={generar} disabled={gen}>{gen ? <Spinner /> : <Download className="size-3.5" />}Formato SUNAT 12.1 (Excel)</button>
+    </div>
+  );
+}
