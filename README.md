@@ -29,6 +29,10 @@ Sistema web para la operación diaria de una botica en Perú, alineado con **SUN
 
 ### Observatorio de Precios (DIGEMID)
 
+**Comparar con el mercado.** `DIGEMID → Observatorio de precios → Comparar con el mercado → Sincronizar con el Observatorio` consulta el buscador público del Observatorio y muestra, por producto, el precio mínimo, la mediana y el máximo que reportan las boticas privadas de su distrito (o de su provincia si hay pocas), si usted está por encima o por debajo, y el genérico equivalente más barato. Requiere el **ubigeo** del establecimiento en Configuración. Cada día el cron actualiza un lote de 20 productos.
+
+**Reportar mis precios.**
+
 `DIGEMID → Observatorio de precios` genera el archivo que se sube en el portal del Observatorio:
 
 - CSV UTF-8, separado por comas, fin de línea CRLF, cabecera exacta `CodEstab,CodProd,Precio 1,Precio 2`.

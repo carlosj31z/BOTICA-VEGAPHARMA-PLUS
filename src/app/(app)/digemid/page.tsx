@@ -10,6 +10,7 @@ import { N, fecha, fechaHora, CONDICION_VENTA, hoyLima } from "@/lib/format";
 import { descargar, descargarCSV } from "@/lib/csv";
 import { AlertasSanitarias } from "./alertas-sanitarias";
 import { Catalogo } from "./catalogo";
+import { PreciosMercado } from "./precios-mercado";
 import { csvObservatorio, nombreArchivo, zipObservatorio } from "@/lib/observatorio";
 
 const TABS = [["sanitarias", "Alertas sanitarias"], ["vencimientos", "Vencimientos y stock"], ["observatorio", "Observatorio de precios"], ["catalogo", "Catálogo DIGEMID"], ["libro", "Libro de recetas y controlados"]] as const;
@@ -27,7 +28,7 @@ export default function Digemid() {
       {tab === "sanitarias" && <AlertasSanitarias />}
       {tab === "vencimientos" && <Alertas />}
       {tab === "catalogo" && <Catalogo />}
-      {tab === "observatorio" && <Observatorio />}
+      {tab === "observatorio" && <ObservatorioTab />}
       {tab === "libro" && <Libro />}
     </div>
   );
@@ -56,6 +57,20 @@ function Alertas() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function ObservatorioTab() {
+  const [vista, setVista] = useState<"mercado" | "reporte">(() => { try { return (sessionStorage.getItem("digemid:obs") as any) || "mercado"; } catch { return "mercado"; } });
+  const cambiar = (v: "mercado" | "reporte") => { setVista(v); try { sessionStorage.setItem("digemid:obs", v); } catch {} };
+  return (
+    <div className="space-y-4">
+      <div className="seg">
+        <button data-on={vista === "mercado"} onClick={() => cambiar("mercado")}>Comparar con el mercado</button>
+        <button data-on={vista === "reporte"} onClick={() => cambiar("reporte")}>Reportar mis precios</button>
+      </div>
+      {vista === "mercado" ? <PreciosMercado /> : <Observatorio />}
     </div>
   );
 }
